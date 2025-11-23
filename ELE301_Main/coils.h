@@ -16,8 +16,6 @@ enum CoilId {
 void coilsInit();
 
 // Tek bir bobini sür (u: -255 .. +255)
-// u >= 0  -> bir yönde akım
-// u <  0  -> ters yönde akım
 void coilSetPWM(CoilId id, float u);
 
 // Tüm bobinleri kapat

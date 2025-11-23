@@ -2,7 +2,7 @@
 #include "coils.h"
 
 // -------------------------
-// Pin haritaları
+// L298N Pin Haritaları
 // -------------------------
 //
 // Bobin 1 -> L298N #1 OUT1-OUT2
@@ -32,7 +32,7 @@ static const uint8_t IN2_PINS[4] = {26, 30, 32, 36};
 
 
 // ---------------------------------------------------
-// Başlatma
+// Başlatma: Tüm L298N kanallarını OUTPUT yap ve kapalı başlat
 // ---------------------------------------------------
 void coilsInit() {
   for (int i = 0; i < 4; ++i) {
@@ -48,31 +48,35 @@ void coilsInit() {
 }
 
 // ---------------------------------------------------
-// Tek bobin sürme
-// u: -255 .. +255  (PID çıkışını direkt verebilirsin)
+// Tek bobin sürme (L298N için optimize)
+//
+// u: -255 .. +255
+//   u >= 0  → IN1 = HIGH, IN2 = LOW, duty = u
+//   u <  0  → IN1 = LOW , IN2 = HIGH, duty = -u
 // ---------------------------------------------------
 void coilSetPWM(CoilId id, float u) {
   if (id < COIL1 || id > COIL4) return;
 
-  // sınırla
+  // Sınırla
   if (u >  255.0f) u =  255.0f;
   if (u < -255.0f) u = -255.0f;
 
-  uint8_t idx = (uint8_t)id;
+  uint8_t idx = static_cast<uint8_t>(id);
   int duty;
 
   if (u >= 0.0f) {
-    // Bir yönde akım
+    // Akım bir yönde
     digitalWrite(IN1_PINS[idx], HIGH);
     digitalWrite(IN2_PINS[idx], LOW);
     duty = (int)(u + 0.5f);      // yuvarla
   } else {
-    // Ters yönde akım
+    // Akım ters yönde
     digitalWrite(IN1_PINS[idx], LOW);
     digitalWrite(IN2_PINS[idx], HIGH);
     duty = (int)(-u + 0.5f);
   }
 
+  // PWM sinyali L298N'in EN pinine gidiyor
   analogWrite(EN_PINS[idx], duty);
 }
 
