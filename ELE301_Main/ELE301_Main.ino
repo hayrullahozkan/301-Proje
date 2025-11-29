@@ -204,4 +204,31 @@ void loop()
     Serial.print(" | Kp="); Serial.print(Kp);
     Serial.print(" Ki="); Serial.print(Ki);
     Serial.print(" Kd="); Serial.println(Kd);
+
+    // ---------------------------------------------------
+// 9.5) Coil Debug (bobinlere giden gerçek sinyal)
+// ---------------------------------------------------
+Serial.print("[COILS] u="); Serial.print(u);
+
+// Coil 1
+Serial.print(" | C1_IN1="); Serial.print(digitalRead(pinIn1[COIL1]));
+Serial.print(" C1_IN2=");   Serial.print(digitalRead(pinIn2[COIL1]));
+Serial.print(" C1_PWM=");   Serial.print(analogRead(pinEn[COIL1]));
+
+// Coil 2
+Serial.print(" | C2_IN1="); Serial.print(digitalRead(pinIn1[COIL2]));
+Serial.print(" C2_IN2=");   Serial.print(digitalRead(pinIn2[COIL2]));
+Serial.print(" C2_PWM=");   Serial.print(analogRead(pinEn[COIL2]));
+
+// Coil 3
+Serial.print(" | C3_IN1="); Serial.print(digitalRead(pinIn1[COIL3]));
+Serial.print(" C3_IN2=");   Serial.print(digitalRead(pinIn2[COIL3]));
+Serial.print(" C3_PWM=");   Serial.print(analogRead(pinEn[COIL3]));
+
+// Coil 4
+Serial.print(" | C4_IN1="); Serial.print(digitalRead(pinIn1[COIL4]));
+Serial.print(" C4_IN2=");   Serial.print(digitalRead(pinIn2[COIL4]));
+Serial.print(" C4_PWM=");   Serial.print(analogRead(pinEn[COIL4]));
+
+Serial.println();
 }
