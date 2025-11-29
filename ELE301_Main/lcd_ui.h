@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-// Kontrol tipi (sadece yapı: P, PI, PD, PID)
+// ---- Kontrol Modu ----
 enum ControlMode {
     MODE_P = 0,
     MODE_PI,
@@ -11,28 +11,27 @@ enum ControlMode {
     MODE_PID
 };
 
-// LCD + encoder UI başlatma
+// ---- Başlat ----
 void lcdUIInit();
 
-// Her loop turunda çağrılacak (encoder + buton + LCD menüsü)
+// ---- Her loop'ta UI güncelle ----
 void lcdUITask();
 
-// Parametre getter'ları (UI tarafındaki DEĞERLER)
-float getRefMm();          // Setpoint [mm]
+// ---- Mesafe LCD'ye yaz ----
+void lcdSetDistance(int mm);
+
+// ---- Değerleri main'e aktar ----
+float getRefMm();
 float getKp();
 float getKi();
 float getKd();
 ControlMode getControlMode();
-bool getAutoTuneEnabled(); // Autotune ON/OFF
+bool getAutoTuneEnabled();
 
-// Kullanıcı şu an edit modunda mı? (main'deki commit mantığı için)
+// ---- Edit mode kontrol ----
 bool lcdIsEditing();
 
-// Sensörden gelen mesafeyi LCD'de göstermek için
-void lcdSetDistance(int mm);
-
-// Autotune açıkken, kontrolcünün anlık Kp/Ki/Kd değerlerini
-// LCD'de göstermek için (edit modunda DEĞİLKEN günceller).
-void lcdUpdateGainsFromController(float Kp, float Ki, float Kd);
+// ---- Autotune güncel değerleri güncelle ----
+void lcdUpdateGainsFromController(float kp, float ki, float kd);
 
 #endif
