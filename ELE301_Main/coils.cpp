@@ -1,48 +1,77 @@
+// coils.cpp
 #include "coils.h"
 
-// ---- PIN DİZİLERİNİN GERÇEK TANIMLARI ----
-// Header'daki extern bildirimleri bunlara bağlanır.
-// static kaldırıldı → tüm proje bunları görebilir.
-int pinEn[4]  = {2, 4, 6, 8};
-int pinIn1[4] = {22, 28, 24, 34};
-int pinIn2[4] = {26, 30, 32, 36};
+// -------------------------
+// L298N Pin Haritaları
+// -------------------------
+//
+// Bobin 1 -> L298N #1 OUT1-OUT2
+//   EN: D2   (PWM)
+//   IN1: D22
+//   IN2: D26
+//
+// Bobin 2 -> L298N #1 OUT3-OUT4
+//   EN: D4   (PWM)
+//   IN1: D28
+//   IN2: D30
+//
+// Bobin 3 -> L298N #2 OUT1-OUT2
+//   EN: D6   (PWM)
+//   IN1: D24
+//   IN2: D32
+//
+// Bobin 4 -> L298N #2 OUT3-OUT4
+//   EN: D8   (PWM)
+//   IN1: D34
+//   IN2: D36
+//
+
+static const uint8_t EN_PINS[4]  = {2, 4, 6, 8};
+static const uint8_t IN1_PINS[4] = {22, 28, 24, 34};
+static const uint8_t IN2_PINS[4] = {26, 30, 32, 36};
 
 // ---------------------------------------------------
-// Başlatma (pinMode + kapalı başlat)
+// Başlatma: pinMode + bobinleri kapalı başlat
 // ---------------------------------------------------
 void coilsInit() {
   for (int i = 0; i < 4; ++i) {
-    pinMode(pinEn[i],  OUTPUT);
-    pinMode(pinIn1[i], OUTPUT);
-    pinMode(pinIn2[i], OUTPUT);
+    pinMode(EN_PINS[i],  OUTPUT);
+    pinMode(IN1_PINS[i], OUTPUT);
+    pinMode(IN2_PINS[i], OUTPUT);
 
-    analogWrite(pinEn[i], 0);
-    digitalWrite(pinIn1[i], LOW);
-    digitalWrite(pinIn2[i], LOW);
+    analogWrite(EN_PINS[i], 0);
+    digitalWrite(IN1_PINS[i], LOW);
+    digitalWrite(IN2_PINS[i], LOW);
   }
 }
 
 // ---------------------------------------------------
-// Tek bobin sürme
+// Tek bobin sürme (L298N için)
+//
+// u: -255 .. +255
+//   u >= 0 → IN1 = HIGH, IN2 = LOW
+//   u <  0 → IN1 = LOW , IN2 = HIGH
 // ---------------------------------------------------
 void coilSetPWM(CoilId id, float u) {
   if (id < COIL1 || id > COIL4) return;
 
-  if (u >  255) u =  255;
-  if (u < -255) u = -255;
+  if (u >  80.0f) u =  80.0f;
+  if (u < -80.0f) u = -80.0f;
 
-  uint8_t i = (uint8_t)id;
-  int duty = abs((int)u);
+  uint8_t idx = (uint8_t)id;
+  int duty;
 
   if (u >= 0) {
-    digitalWrite(pinIn1[i], HIGH);
-    digitalWrite(pinIn2[i], LOW);
+    digitalWrite(IN1_PINS[idx], HIGH);
+    digitalWrite(IN2_PINS[idx], LOW);
+    duty = (int)(u);
   } else {
-    digitalWrite(pinIn1[i], LOW);
-    digitalWrite(pinIn2[i], HIGH);
+    digitalWrite(IN1_PINS[idx], LOW);
+    digitalWrite(IN2_PINS[idx], HIGH);
+    duty = (int)(-u);
   }
 
-  analogWrite(pinEn[i], duty);
+  analogWrite(EN_PINS[idx], duty);
 }
 
 // ---------------------------------------------------
@@ -50,8 +79,8 @@ void coilSetPWM(CoilId id, float u) {
 // ---------------------------------------------------
 void coilsOff() {
   for (int i = 0; i < 4; ++i) {
-    analogWrite(pinEn[i], 0);
-    digitalWrite(pinIn1[i], LOW);
-    digitalWrite(pinIn2[i], LOW);
+    analogWrite(EN_PINS[i], 0);
+    digitalWrite(IN1_PINS[i], LOW);
+    digitalWrite(IN2_PINS[i], LOW);
   }
 }

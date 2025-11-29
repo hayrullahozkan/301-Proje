@@ -23,6 +23,7 @@ float       Ki_active    = 0.00f;
 float       Kd_active    = 0.00f;
 ControlMode mode_active  = MODE_PID;
 bool        autoTune_on  = false;
+const float SENSOR_OFFSET = 15.0f;   // 15 mm offset
 
 bool lastEditing = false;
 
@@ -121,6 +122,8 @@ void loop()
     }
 
     float z_meas = (float)z_raw;
+    z_meas -= SENSOR_OFFSET;
+    if (z_meas < 0) z_meas = 0;   // negatif olmasın
 
     // ---------------------------------------------------
     // 4) PID periyodik olsun
@@ -205,30 +208,4 @@ void loop()
     Serial.print(" Ki="); Serial.print(Ki);
     Serial.print(" Kd="); Serial.println(Kd);
 
-    // ---------------------------------------------------
-    // 9.5) Coil Debug (bobinlere giden gerçek sinyal)
-    // ---------------------------------------------------
-    Serial.print("[COILS] u="); Serial.print(u);
-
-    // Coil 1
-    Serial.print(" | C1_IN1="); Serial.print(digitalRead(pinIn1[COIL1]));
-    Serial.print(" C1_IN2=");   Serial.print(digitalRead(pinIn2[COIL1]));
-    Serial.print(" C1_PWM=");   Serial.print(analogRead(pinEn[COIL1]));
-
-    // Coil 2
-    Serial.print(" | C2_IN1="); Serial.print(digitalRead(pinIn1[COIL2]));
-    Serial.print(" C2_IN2=");   Serial.print(digitalRead(pinIn2[COIL2]));
-    Serial.print(" C2_PWM=");   Serial.print(analogRead(pinEn[COIL2]));
-
-    // Coil 3
-    Serial.print(" | C3_IN1="); Serial.print(digitalRead(pinIn1[COIL3]));
-    Serial.print(" C3_IN2=");   Serial.print(digitalRead(pinIn2[COIL3]));
-    Serial.print(" C3_PWM=");   Serial.print(analogRead(pinEn[COIL3]));
-
-    // Coil 4
-    Serial.print(" | C4_IN1="); Serial.print(digitalRead(pinIn1[COIL4]));
-    Serial.print(" C4_IN2=");   Serial.print(digitalRead(pinIn2[COIL4]));
-    Serial.print(" C4_PWM=");   Serial.print(analogRead(pinEn[COIL4]));
-
-    Serial.println();
 }

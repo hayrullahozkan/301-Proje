@@ -12,12 +12,6 @@ enum CoilId {
   COIL4
 };
 
-// ---- DEBUG İÇİN PİN DİZİLERİNİ DIŞARI AÇIYORUZ ----
-// Bunlar coils.cpp içinde tanımlı. Burada sadece "extern" ile bildiriyoruz.
-extern int pinEn[4];
-extern int pinIn1[4];
-extern int pinIn2[4];
-
 // L298N + bobin pinlerini hazırlar (setup'te 1 kez çağır)
 void coilsInit();
 

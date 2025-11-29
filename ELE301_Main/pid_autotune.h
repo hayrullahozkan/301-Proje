@@ -11,7 +11,6 @@ public:
     void reset();
     void setMode(ControlMode mode);
 
-    // ⚠️ Bunlar yeni fonksiyonlar — .ino bunları çağırıyor
     void setPhysicalParams(float mass_kg, float z0_m, float i0_A, float g_val = 9.81f);
     void setDesiredDynamics(float wn, float zeta = 1.0f);
 
